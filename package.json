@@ -4,16 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-	"test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-	"autotrace": "0.0.1",
-	"flickr-urls": "0.0.0",
-	"flickrapi": "^0.3.28",
-	"lodash": "^3.8.0",
-	"q": "^1.3.0",
-	"request": "^2.55.0"
+    "autotrace": "0.0.1",
+    "flickr-urls": "0.0.0",
+    "flickrapi": "^0.3.28",
+    "lodash": "^3.8.0",
+    "moment": "^2.10.2",
+    "parse-rss": "^1.0.3",
+    "q": "^1.3.0",
+    "request": "^2.55.0"
   }
 }
