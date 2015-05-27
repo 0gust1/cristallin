@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "autotrace": "0.0.1",
+    "canvas": "^1.2.2",
     "flickr-urls": "0.0.0",
     "flickrapi": "^0.3.28",
     "lodash": "^3.8.0",
