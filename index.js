@@ -18,7 +18,11 @@ var _ = require("lodash");
 var path = require("path");
 var request = require("request");
 var parseRSS = require("parse-rss");
+var url = require("url");
+var path = require("path");
 var fUrl = require('flickr-urls');
+var https = require("https");
+  	var url = require("url");
 
 var DL_DIR = "./dl";
 
@@ -51,11 +55,11 @@ function parseTumblrFeed(url) {
 var flickrSearch = require("./lib/flickr.js");
 
 var searchOptions = {
-  text: "portrait",
+  text: "farmer",
   sort: "interestingness-desc",
   safe_search: 3,
   page: 1,
-  per_page: 4
+  per_page: 20
 };
 
 // var toto = flickrSearch.searchCommons(searchOptions);
@@ -67,18 +71,92 @@ var objdetect = require("./lib/objDetect.js");
 
 var Canvas = require('canvas');
 var Image = Canvas.Image;
-var canvas = new Canvas();
-var ctx = canvas.getContext('2d');
+
+
 var fs = require('fs');
 var size = 1024;
 
-fs.readFile(__dirname + '/dl/group4.jpg', function(err, buff) {
+var request = require("request");
+
+var search = flickrSearch.searchCommons(searchOptions);
+
+search.then(function(res) {
+  //console.log(res);
+
+  var infos = res.map(function(element, index){
+  	var el = {};
+  	el.id = element.id;
+  	el.targetUrl = element.targetUrl;
+  	el.title = element.title;
+  	return el;
+  });
+
+  infos.forEach(function(element, index){
+
+
+ //  	request.get(element.targetUrl,function(error,response,body){
+	// 	console.log(response.statusCode);
+	//     console.log(response.headers['content-type']);
+	//     if (!error && response.statusCode == 200) {
+ //        processImage(null,body);
+ //        // Continue with your processing here.
+ //    	}
+	//     //console.log("response : ",response);
+
+	//     //
+	// });
+  	console.log("ix : ",element);
+	// request.get(element.targetUrl,function(err,response,body){
+	// 	//console.log(response);
+	// 	//console.log(body);
+
+	// 	response.on("end",function(error,response,body){console.log("hzy");});
+	//     //console.log(response.headers['content-type']);
+	//     if (!err){//} && response.statusCode == 200) {
+ //        processImage(null,body,element);
+ //        // Continue with your processing here.
+ //    	}
+ //  });
+
+  	var options = url.parse(element.targetUrl);
+	https.get(options, function (response) {
+	  var chunks = [];
+	  response.on('data', function (chunk) {
+	    chunks.push(chunk);
+	  }).on('end', function() {
+	  	//console.log(response);
+	    var buffer = Buffer.concat(chunks);
+	    console.log("file : "+buffer.length);
+	    console.log("link : ",element.targetUrl);
+	    processImage(null,buffer,element);
+	  });
+	});
+
+});//end foreach
+
+});
+
+function getUrl(imageUrl, fprocess,infos){
+	request.get(imageUrl).on('response',function(response){
+		console.log(response.statusCode);
+	    console.log(response.headers['content-type']);
+	    console.log("response : ",response);
+
+	    fprocess.call(response);
+	});
+}
+
+//fs.readFile(__dirname + '/dl/group4.jpg', processImage);
+
+function processImage(err, buff, infos){
+  //console.log("buf : ",buff);
+  var canvas = new Canvas();
+  var ctx = canvas.getContext('2d');
 
   if (err)
     throw err;
   img = new Image;
   img.src = buff;
-
 
   canvas.width = ~~(size * img.width / img.height);
   canvas.height = ~~(size);
@@ -99,7 +177,7 @@ fs.readFile(__dirname + '/dl/group4.jpg', function(err, buff) {
   canFace.height =e[3]*1.618;
   canFace.getContext('2d').drawImage(canvas, e[0], e[1]-(e[3]*0.309), e[2], e[3]*1.618, 0, 0,e[2],e[3]*1.618);
 
-  saveCanvas(canFace,""+i);
+  saveCanvas(canFace,"dl/",infos.id+"_"+i);
   });
 
 
@@ -111,9 +189,9 @@ fs.readFile(__dirname + '/dl/group4.jpg', function(err, buff) {
    */
   function detectFaces(canvas) {
     // Detect faces in the image:
-    var rects = detector.detect(canvas, 1);
-    console.log("detector : ", detector.tilted);
-    console.log("dtected rectangles : ", rects);
+    var rects = detector.detect(canvas,1);
+    //console.log("detector : ", detector.tilted);
+    //console.log("dtected rectangles : ", rects);
 
     //we take the first detection square
     // if(rects[0]){
@@ -128,25 +206,25 @@ fs.readFile(__dirname + '/dl/group4.jpg', function(err, buff) {
     // }
 
     // Draw rectangles around detected faces:
-    for (var i = 0; i < rects.length; ++i) {
+    // for (var i = 0; i < rects.length; ++i) {
 
-      var coord = rects[i];
-      ctx.beginPath();
-      //ctx.lineWidth = '' + coord[4] * .5;
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(0, 255, 255, 0.7)';
-      ctx.rect(coord[0], coord[1], coord[2], coord[3]);
-      ctx.stroke();
-    }
+    //   var coord = rects[i];
+    //   ctx.beginPath();
+    //   //ctx.lineWidth = '' + coord[4] * .5;
+    //   ctx.lineWidth = 1;
+    //   ctx.strokeStyle = 'rgba(0, 255, 255, 0.7)';
+    //   ctx.rect(coord[0], coord[1], coord[2], coord[3]);
+    //   ctx.stroke();
+    // }
     return rects;
-    //draw mean rectangle
+    //draw mean rectangles
     //detector.groupRectangles();
   }
 
 
-  function saveCanvas(canvas, index) {
+  function saveCanvas(canvas, path, name) {
     var fst = require('fs'),
-      out = fst.createWriteStream(__dirname + '/dl/extracted_'+index+'.jpg'),
+      out = fst.createWriteStream(__dirname +"/"+ path + name +'.jpg'),
       stream = canvas.jpegStream();
 
     stream.on('data', function(chunk) {
@@ -154,10 +232,14 @@ fs.readFile(__dirname + '/dl/group4.jpg', function(err, buff) {
     });
 
     stream.on('end', function() {
-      console.log('saved jpg');
+      console.log('saved '+__dirname +"/"+ path + name +'.jpg');
     });
 
   }
 
-});
 
+
+
+
+
+}
