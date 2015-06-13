@@ -12,6 +12,10 @@ Un autre but serait de faire tourner quelques algorithmes de traitement d'image 
 
 Enfin, dernière idée, dans la même démarche que le bot @archillect de Murat Pak, un système fonctionnant selon un système “d'interestingness” (celle de flickr ou une version recalculée à partir du nombre de vues et d'interactions).
 
+### Branche de dev
+
+la branche `dev/objectdetect` contient une version utilisant `js-objectdetect` (https://github.com/mtschirs/js-objectdetect/) et capable d'extraires les visages des images du résultat de recherche flickr.
+
 ### Clef d'API Flickr
 
 Pour l'utiliser (la partie flickr), vous aurez besoin d'une clef pour l'API (et donc d'avoir un compte Flickr) : créez un fichier `flickrKey.json` à la raçine de votre projet, suivant le modèle suivant :
@@ -22,5 +26,9 @@ Pour l'utiliser (la partie flickr), vous aurez besoin d'une clef pour l'API (et 
       "secret": "azertyuiop1234567890"
 }
 ```
+
+### Flickr Commons :
+
+<a href="https://www.flickr.com/photos/ashassin/18122236134" title="Forgotten faces 1 by 0gust1, on Flickr"><img src="https://c1.staticflickr.com/1/344/18122236134_1e8abe49c6_z.jpg" width="441" height="640" alt="Forgotten faces 1"></a>
 
 
