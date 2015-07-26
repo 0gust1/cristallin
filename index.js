@@ -54,8 +54,9 @@ function parseTumblrFeed(url) {
 var flickrSearch = require("./lib/flickr.js");
 
 var searchOptions = {
-  user_id:"me",
-  //text: "sculpture",
+  //user_id:"79559999@N00",
+  is_commons: true,
+  text: "india portrait",
   sort: "interestingness-desc",
   safe_search: 3,
   page: 1,

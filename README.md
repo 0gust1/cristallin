@@ -22,5 +22,6 @@ Pour l'utiliser (la partie flickr), vous aurez besoin d'une clef pour l'API (et 
       "secret": "azertyuiop1234567890"
 }
 ```
+### Reminder de commandes utiles :
 
-
+`montage ./dl/*.jpg  -mode concatenate  -geometry 252x408+10+10 -background black ./dl/montage.jpg`
